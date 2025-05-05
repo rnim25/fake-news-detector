@@ -10,7 +10,7 @@ with open("fake_news_model.pkl", "rb") as f:
     model = pickle.load(f)
 
 # 🖼️ Affichage du logo
-st.image("https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.kcl.ac.uk%2Fnews%2Ffacebooks-fact-checking-is-only-the-beginning&psig=AOvVaw3IK3fL1CBLj--xfYgNt3Za&ust=1746572388498000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCLCX5_-3jY0DFQAAAAAdAAAAABAv", width=80)  
+st.image("fake_news_model.pkl", width=80)  
 st.title("📰 Détecteur de Fake News")
 st.markdown("Vérifiez si une nouvelle est vraie ou fausse grâce à une IA entraînée.")
 
