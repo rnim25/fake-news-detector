@@ -1,30 +1,47 @@
 import streamlit as st
 import pickle
+import matplotlib.pyplot as plt
 
-st.title("📰 Fake News Detector")
+# 🎨 Mise en page Streamlit
+st.set_page_config(page_title="Détecteur de Fake News", layout="wide")
 
-st.write("Collez ici un texte d'article pour vérifier s'il est fiable ou pas.")
-
-user_input = st.text_area("Texte de l'article")
-
-if user_input:
-    # FAUX modèle juste pour la démo
-    if "vaccin" in user_input.lower() or "complot" in user_input.lower():
-        st.error("🛑 FAKE News détectée !")
-    else:
-        st.success("✅ Cette nouvelle semble réelle.")
-
-# Charger le modèle depuis le fichier
+# 📌 Chargement du modèle
 with open("fake_news_model.pkl", "rb") as f:
     model = pickle.load(f)
 
+# 🖼️ Affichage du logo
+st.image("https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.kcl.ac.uk%2Fnews%2Ffacebooks-fact-checking-is-only-the-beginning&psig=AOvVaw3IK3fL1CBLj--xfYgNt3Za&ust=1746572388498000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCLCX5_-3jY0DFQAAAAAdAAAAABAv", width=80)  
 st.title("📰 Détecteur de Fake News")
+st.markdown("Vérifiez si une nouvelle est vraie ou fausse grâce à une IA entraînée.")
 
-text = st.text_area("Entrez le texte à analyser")
+# 🧾 Entrée utilisateur
+user_input = st.text_area("✏️ Collez ici votre texte :", height=150)
 
-if text:
-    prediction = model.predict([text])
-    if prediction[0] == 1:
-        st.success("✅ Cette nouvelle semble réelle.")
-    else:
-        st.error("🛑 FAKE News détectée !")
+# ✅ Bouton pour déclencher l’analyse
+if user_input.strip():
+    if st.button("🔍 Analyser la news"):
+
+        # 🔎 Prédiction
+        proba_real = model.predict_proba([user_input])[0][1]
+        proba_fake = 1 - proba_real
+
+        # 👉 Deux colonnes : texte à gauche, graphique à droite
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown(f"### 🔎 Probabilité que ce soit une vraie news : **{proba_real * 100:.2f}%**")
+            if proba_real > 0.5:
+                st.success("✅ Cette nouvelle semble réelle.")
+            else:
+                st.error("🛑 FAKE News détectée !")
+
+        with col2:
+            labels = ['Fake', 'Real']
+            sizes = [proba_fake, proba_real]
+            colors = ['#FF4B4B', '#4CAF50']
+
+            fig, ax = plt.subplots()
+            ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
+            ax.axis('equal')
+            st.pyplot(fig)
+
