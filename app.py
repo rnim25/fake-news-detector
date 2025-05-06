@@ -2,30 +2,29 @@ import streamlit as st
 import pickle
 import matplotlib.pyplot as plt
 
-# 🎨 Mise en page Streamlit
+# ⚙️ Configuration
 st.set_page_config(page_title="Détecteur de Fake News", layout="wide")
 
-# 📌 Chargement du modèle
-with open("facke-news-removebg-preview.png", "rb") as f:
-    model = pickle.load(f)
+# 📦 Chargement du modèle + vectorizer
+with open("fake_news_model (3).pkl", "rb") as f:
+    vectorizer, model = pickle.load(f)
 
-# 🖼️ Affichage du logo
-st.image("fake_news_model.pkl", width=80)  
+# 🖼️ Logo
+st.image("facke-news-removebg-preview.png", width=80)  
 st.title("📰 Détecteur de Fake News")
 st.markdown("Vérifiez si une nouvelle est vraie ou fausse grâce à une IA entraînée.")
 
-# 🧾 Entrée utilisateur
-user_input = st.text_area("✏️ Collez ici votre texte :", height=150)
+# ✏️ Entrée utilisateur
+user_input = st.text_area("Collez ici votre texte :", height=150)
 
-# ✅ Bouton pour déclencher l’analyse
+# 🔘 Analyse
 if user_input.strip():
     if st.button("🔍 Analyser la news"):
 
-        # 🔎 Prédiction
-        proba_real = model.predict_proba([user_input])[0][1]
+        X_input = vectorizer.transform([user_input])
+        proba_real = model.predict_proba(X_input)[0][1]
         proba_fake = 1 - proba_real
 
-        # 👉 Deux colonnes : texte à gauche, graphique à droite
         col1, col2 = st.columns(2)
 
         with col1:
@@ -44,4 +43,3 @@ if user_input.strip():
             ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
             ax.axis('equal')
             st.pyplot(fig)
-
