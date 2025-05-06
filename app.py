@@ -2,29 +2,30 @@ import streamlit as st
 import pickle
 import matplotlib.pyplot as plt
 
-# ⚙️ Configuration
+# Configuration de la page
 st.set_page_config(page_title="Détecteur de Fake News", layout="wide")
 
-# 📦 Chargement du modèle + vectorizer
+# Chargement du modèle
 with open("fake_news_model (3).pkl", "rb") as f:
     vectorizer, model = pickle.load(f)
 
-# 🖼️ Logo
-st.image("facke-news-removebg-preview.png", width=80)  
+# Logo et titre
+st.image("facke-news-removebg-preview.png", width=150)  
 st.title("📰 Détecteur de Fake News")
 st.markdown("Vérifiez si une nouvelle est vraie ou fausse grâce à une IA entraînée.")
 
-# ✏️ Entrée utilisateur
-user_input = st.text_area("Collez ici votre texte :", height=150)
+# Zone de texte utilisateur
+user_input = st.text_area("✏️ Collez ici votre texte :", height=150)
 
-# 🔘 Analyse
-if user_input.strip():
+# Affiche le bouton UNIQUEMENT si du texte est entré
+if user_input.strip():  # Si ce n’est pas vide ou juste des espaces
     if st.button("🔍 Analyser la news"):
-
-        X_input = vectorizer.transform([user_input])
-        proba_real = model.predict_proba(X_input)[0][1]
+        # Prédiction
+        X_vec = vectorizer.transform([user_input])
+        proba_real = model.predict_proba(X_vec)[0][1]
         proba_fake = 1 - proba_real
 
+        # Deux colonnes : message à gauche, graphique à droite
         col1, col2 = st.columns(2)
 
         with col1:
