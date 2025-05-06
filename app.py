@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="Détecteur de Fake News", layout="wide")
 
 # 📌 Chargement du modèle
-with open("fake_news_model.pkl", "rb") as f:
+with open("facke-news-removebg-preview.png", "rb") as f:
     model = pickle.load(f)
 
 # 🖼️ Affichage du logo
